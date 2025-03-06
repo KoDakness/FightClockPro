@@ -18,44 +18,57 @@ export const useTimer = (
   const [totalRounds, setTotalRounds] = useState(initialTotalRounds);
   const [initialCountdown, setInitialCountdown] = useState<number | null>(null);
 
-  // Use a more reliable bell sound
-  const [bellSound, setBellSound] = useState(() => {
+  const [sounds, setSounds] = useState(() => {
     const storedSound = localStorage.getItem('boxingTimer_bellSound');
-    const audio = new Audio(storedSound || bellSoundUrl);
-    audio.load();
-    return audio;
+    const bell = new Audio(storedSound || bellSoundUrl);
+    const click = new Audio(clickSoundUrl);
+    const sticks = new Audio(sticksSoundUrl);
+    
+    [bell, click, sticks].forEach(audio => {
+      audio.preload = 'auto';
+      audio.load();
+    });
+    
+    return { bell, click, sticks };
   });
-  const clickSound = new Audio(clickSoundUrl);
-  const sticksSound = new Audio(sticksSoundUrl);
 
   useEffect(() => {
-    bellSound.load();
-    clickSound.load();
-    sticksSound.load();
-  }, [bellSound]);
+    const { bell, click, sticks } = sounds;
+    bell.load();
+    click.load();
+    sticks.load();
+
+    return () => {
+      bell.pause();
+      click.pause();
+      sticks.pause();
+    };
+  }, [sounds]);
 
   const handleSoundChange = useCallback((file: File) => {
     const url = URL.createObjectURL(file);
     const audio = new Audio(url);
-    
-    // Store in localStorage
+    audio.preload = 'auto';
+    audio.load();
+
     localStorage.setItem('boxingTimer_bellSound', url);
-    
-    setBellSound(audio);
+    setSounds(prev => ({ ...prev, bell: audio }));
   }, []);
 
   const resetSound = useCallback(() => {
     const defaultBell = new Audio(bellSoundUrl);
-    // Clear localStorage
+    defaultBell.preload = 'auto';
     localStorage.removeItem('boxingTimer_bellSound');
     defaultBell.load();
-    setBellSound(defaultBell);
+    setSounds(prev => ({ ...prev, bell: defaultBell }));
   }, []);
 
   const playBell = useCallback(() => {
     try {
-      bellSound.currentTime = 0;
-      const playPromise = bellSound.play();
+      const { bell } = sounds;
+      bell.pause();
+      bell.currentTime = 0;
+      const playPromise = bell.play();
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
           console.warn('Could not play bell sound:', error);
@@ -64,30 +77,39 @@ export const useTimer = (
     } catch (error) {
       console.warn('Error playing bell sound:', error);
     }
-  }, [bellSound]);
+  }, [sounds]);
 
   const playClick = useCallback(() => {
-    clickSound.currentTime = 0;
-    clickSound.play().catch(() => {
+    const { click } = sounds;
+    click.pause();
+    click.currentTime = 0;
+    click.play().catch(() => {
       console.warn('Could not play click sound');
     });
-  }, [clickSound]);
+  }, [sounds]);
 
   const playSticks = useCallback(() => {
-    sticksSound.currentTime = 0;
-    sticksSound.play().catch(() => {
+    const { sticks } = sounds;
+    sticks.pause();
+    sticks.currentTime = 0;
+    sticks.play().catch(() => {
       console.warn('Could not play sticks sound');
     });
-  }, [sticksSound]);
+  }, [sounds]);
 
   const reset = useCallback(() => {
+    const { bell, click, sticks } = sounds;
     setIsRunning(false);
     setCurrentRound(1);
+    bell.pause();
+    click.pause();
+    sticks.pause();
     setTimeLeft(roundTime);
     setIsResting(false);
     setRestTimeLeft(restTime);
     setInitialCountdown(null);
-  }, [roundTime, restTime]);
+  }
+  )
 
   const startTimer = useCallback(() => {
     if (!isRunning && initialCountdown === null) {
@@ -133,8 +155,6 @@ export const useTimer = (
         } else {
           setTimeLeft(prev => {
             if (prev === 10) {
-              playClick();
-            } else if (prev <= 10 && prev > 0) {
               playSticks();
             }
             if (prev === 0) {
