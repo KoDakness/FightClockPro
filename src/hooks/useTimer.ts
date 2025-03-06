@@ -91,9 +91,12 @@ export const useTimer = (
     const { click } = sounds;
     click.pause();
     click.currentTime = 0;
-    click.play().catch(() => {
+    const playPromise = click.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
       console.warn('Could not play click sound');
-    });
+      });
+    }
   }, [sounds]);
 
   const playSticks = useCallback(() => {
@@ -122,6 +125,7 @@ export const useTimer = (
   const startTimer = useCallback(() => {
     if (!isRunning && initialCountdown === null) {
       setTimeLeft(roundTime);
+      setIsRunning(false);
       setInitialCountdown(10);
     } else {
       setIsRunning(false);
@@ -135,12 +139,15 @@ export const useTimer = (
     if (initialCountdown !== null) {
       interval = setInterval(() => {
         setInitialCountdown(prev => {
-          if (prev === null) return null;
-          if (prev <= 0) {
+          if (prev === null) {
+            return null;
+          }
+          if (prev === 0) {
             playBell();
             setIsRunning(true);
             return null;
-          } else if (prev <= 10 && prev > 0) {
+          }
+          if (prev > 0) {
             playClick();
           }
           return prev - 1;
@@ -167,8 +174,8 @@ export const useTimer = (
             if (prev === 0) {
               if (currentRound < totalRounds) {
                 setIsResting(true);
-                playBell();
                 setRestTimeLeft(restTime);
+                playBell();
               } else {
                 playBell();
                 reset();
