@@ -19,8 +19,7 @@ export const useTimer = (
   const [initialCountdown, setInitialCountdown] = useState<number | null>(null);
 
   const [sounds, setSounds] = useState(() => {
-    const storedSound = localStorage.getItem('boxingTimer_bellSound');
-    const bell = new Audio(storedSound || bellSoundUrl);
+    const bell = new Audio(bellSoundUrl);
     const click = new Audio(clickSoundUrl);
     const sticks = new Audio(sticksSoundUrl);
     
@@ -135,6 +134,7 @@ export const useTimer = (
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
+    let clickTimeout: NodeJS.Timeout;
 
     if (initialCountdown !== null) {
       interval = setInterval(() => {
@@ -144,11 +144,17 @@ export const useTimer = (
           }
           if (prev === 0) {
             playBell();
+            if (clickTimeout) clearTimeout(clickTimeout);
             setIsRunning(true);
             return null;
           }
           if (prev > 0) {
+            if (clickTimeout) clearTimeout(clickTimeout);
             playClick();
+            clickTimeout = setTimeout(() => {
+              sounds.click.pause();
+              sounds.click.currentTime = 0;
+            }, 300);
           }
           return prev - 1;
         });
@@ -188,8 +194,11 @@ export const useTimer = (
       }, 1000);
     }
 
-    return () => clearInterval(interval);
-  }, [isRunning, isResting, currentRound, totalRounds, roundTime, restTime, playBell, playClick, playSticks, reset, initialCountdown]);
+    return () => {
+      clearInterval(interval);
+      if (clickTimeout) clearTimeout(clickTimeout);
+    };
+  }, [isRunning, isResting, currentRound, totalRounds, roundTime, restTime, playBell, playClick, playSticks, reset, initialCountdown, sounds]);
 
   return {
     isRunning,
