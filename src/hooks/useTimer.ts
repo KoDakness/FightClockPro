@@ -142,9 +142,11 @@ export const useTimer = (
           if (prev === null) {
             return null;
           }
-          if (prev === 0) {
-            playBell();
+          if (prev <= 0) {
             if (clickTimeout) clearTimeout(clickTimeout);
+            sounds.click.pause();
+            sounds.click.currentTime = 0;
+            playBell();
             setIsRunning(true);
             return null;
           }
@@ -154,7 +156,7 @@ export const useTimer = (
             clickTimeout = setTimeout(() => {
               sounds.click.pause();
               sounds.click.currentTime = 0;
-            }, 300);
+            }, 200);
           }
           return prev - 1;
         });
