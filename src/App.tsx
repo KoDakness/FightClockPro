@@ -27,8 +27,8 @@ function App() {
   } = useTimer(180, 10, 3); // 3 minutes round, 10 seconds rest, 3 rounds
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 sm:p-6">
-      <div className="relative w-full max-w-2xl bg-zinc-800/50 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-8 space-y-6 sm:space-y-8 border border-zinc-700/50">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-2 sm:p-6">
+      <div className="relative w-full max-w-2xl bg-zinc-800/50 backdrop-blur-sm rounded-xl sm:rounded-3xl shadow-2xl p-3 sm:p-8 space-y-4 sm:space-y-8 border border-zinc-700/50">
         <div className="flex items-center justify-center space-x-2 sm:space-x-3 mb-6 sm:mb-8">
           <Dumbbell className="w-12 h-12 text-red-500" />
           <h1 className="text-3xl sm:text-4xl font-bold text-red-500">
