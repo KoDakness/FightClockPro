@@ -27,10 +27,10 @@ export const Controls: React.FC<ControlsProps> = ({
   onTotalRoundsChange,
 }) => {
   return (
-    <div className="flex flex-col space-y-8 w-full max-w-lg mx-auto">
-      <div className="grid grid-cols-2 gap-6">
-        <div className="flex flex-col space-y-3">
-          <label className="text-lg font-bold text-zinc-300">Round Time (min)</label>
+    <div className="flex flex-col space-y-6 sm:space-y-8 w-full max-w-lg mx-auto">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6">
+        <div className="flex flex-col space-y-2 sm:space-y-3">
+          <label className="text-base sm:text-lg font-bold text-zinc-300">Round Time (min)</label>
           <input
             type="number"
             min="1"
@@ -40,11 +40,11 @@ export const Controls: React.FC<ControlsProps> = ({
               const value = e.target.value ? parseInt(e.target.value) : 1;
               onRoundTimeChange(Math.max(1, Math.min(5, value)) * 60);
             }}
-            className="px-4 py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-xl text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
+            className="px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-lg sm:rounded-xl text-xl sm:text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
           />
         </div>
-        <div className="flex flex-col space-y-3">
-          <label className="text-lg font-bold text-zinc-300">Rest Time (sec)</label>
+        <div className="flex flex-col space-y-2 sm:space-y-3">
+          <label className="text-base sm:text-lg font-bold text-zinc-300">Rest Time (sec)</label>
           <input
             type="number"
             min="5"
@@ -54,12 +54,12 @@ export const Controls: React.FC<ControlsProps> = ({
               const value = e.target.value ? parseInt(e.target.value) : 5;
               onRestTimeChange(Math.max(5, Math.min(60, value)));
             }}
-            className="px-4 py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-xl text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
+            className="px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-lg sm:rounded-xl text-xl sm:text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
           />
         </div>
       </div>
-      <div className="flex flex-col space-y-3">
-        <label className="text-lg font-bold text-zinc-300">Number of Rounds</label>
+      <div className="flex flex-col space-y-2 sm:space-y-3">
+        <label className="text-base sm:text-lg font-bold text-zinc-300">Number of Rounds</label>
         <input
           type="number"
           min="1"
@@ -69,15 +69,15 @@ export const Controls: React.FC<ControlsProps> = ({
             const value = e.target.value ? parseInt(e.target.value) : 1;
             onTotalRoundsChange(Math.max(1, Math.min(12, value)));
           }}
-          className="px-4 py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-xl text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
+          className="px-3 sm:px-4 py-2 sm:py-3 bg-zinc-800/80 border-2 border-zinc-600 rounded-lg sm:rounded-xl text-xl sm:text-2xl font-bold text-white focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
         />
       </div>
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mt-6 sm:mt-8">
         <button
           onClick={onReset}
-          className="w-full px-6 py-4 bg-zinc-700 hover:bg-zinc-600 rounded-xl font-bold text-white text-lg flex items-center justify-center space-x-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-zinc-700 hover:bg-zinc-600 rounded-lg sm:rounded-xl font-bold text-white text-base sm:text-lg flex items-center justify-center space-x-2 sm:space-x-3 transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
-          <RotateCcw className="w-7 h-7" />
+          <RotateCcw className="w-6 h-6 sm:w-7 sm:h-7" />
           <span>Reset Timer</span>
         </button>
       </div>
