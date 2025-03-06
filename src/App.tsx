@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dumbbell } from 'lucide-react';
+import { Dumbbell, Coffee, Github, MessageSquare } from 'lucide-react';
 import { Timer } from './components/Timer';
 import { Controls } from './components/Controls';
 import { SoundSettings } from './components/SoundSettings';
@@ -64,6 +64,38 @@ function App() {
           onSoundChange={(file) => handleSoundChange(file)}
           onResetSound={resetSound}
         />
+
+        <div className="border-t border-zinc-700/50 pt-6">
+          <div className="flex items-center justify-center space-x-8">
+            <a
+              href="https://discord.gg/QmdfwQH7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-3 text-zinc-300 hover:text-red-500 transition-colors group"
+            >
+              <MessageSquare className="w-6 h-6 group-hover:animate-bounce" />
+              <span className="text-base font-semibold">Discord</span>
+            </a>
+            <a
+              href="https://paypal.me/KoDarknee94"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-3 text-zinc-300 hover:text-red-500 transition-colors group"
+            >
+              <Coffee className="w-6 h-6 group-hover:animate-bounce" />
+              <span className="text-base font-semibold">Buy me a coffee</span>
+            </a>
+            <a
+              href="https://github.com/KoDarkness"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-3 text-zinc-300 hover:text-red-500 transition-colors group"
+            >
+              <Github className="w-6 h-6 group-hover:animate-bounce" />
+              <span className="text-base font-semibold">GitHub</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

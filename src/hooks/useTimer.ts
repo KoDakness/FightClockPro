@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import bellSoundUrl from '../assets/sounds/bell.mp3';
+import clickSoundUrl from '../assets/sounds/click.mp3';
+import sticksSoundUrl from '../assets/sounds/sticks.mp3';
 
 export const useTimer = (
   initialRoundTime: number,
@@ -15,9 +18,15 @@ export const useTimer = (
   const [totalRounds, setTotalRounds] = useState(initialTotalRounds);
   const [initialCountdown, setInitialCountdown] = useState<number | null>(null);
 
-  const [bellSound, setBellSound] = useState(new Audio('https://assets.mixkit.co/sfx/preview/mixkit-boxing-bell-multiple-times-2832.wav'));
-  const clickSound = new Audio('https://bigsoundbank.com/UPLOAD/mp3/1985.mp3');
-  const sticksSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-wooden-stick-break-2945.wav');
+  // Use a more reliable bell sound
+  const [bellSound, setBellSound] = useState(() => {
+    const storedSound = localStorage.getItem('boxingTimer_bellSound');
+    const audio = new Audio(storedSound || bellSoundUrl);
+    audio.load();
+    return audio;
+  });
+  const clickSound = new Audio(clickSoundUrl);
+  const sticksSound = new Audio(sticksSoundUrl);
 
   useEffect(() => {
     bellSound.load();
@@ -36,17 +45,25 @@ export const useTimer = (
   }, []);
 
   const resetSound = useCallback(() => {
-    const defaultBell = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-boxing-bell-multiple-times-2832.wav');
+    const defaultBell = new Audio(bellSoundUrl);
     // Clear localStorage
     localStorage.removeItem('boxingTimer_bellSound');
+    defaultBell.load();
     setBellSound(defaultBell);
   }, []);
 
   const playBell = useCallback(() => {
-    bellSound.currentTime = 0;
-    return bellSound.play().catch(() => {
-      console.warn('Could not play bell sound');
-    });
+    try {
+      bellSound.currentTime = 0;
+      const playPromise = bellSound.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.warn('Could not play bell sound:', error);
+        });
+      }
+    } catch (error) {
+      console.warn('Error playing bell sound:', error);
+    }
   }, [bellSound]);
 
   const playClick = useCallback(() => {
