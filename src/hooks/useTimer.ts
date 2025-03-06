@@ -66,8 +66,16 @@ export const useTimer = (
   const playBell = useCallback(() => {
     try {
       const { bell } = sounds;
+      // Stop any currently playing bell sound
       bell.pause();
       bell.currentTime = 0;
+      
+      // Set a short duration for the bell sound
+      setTimeout(() => {
+        bell.pause();
+        bell.currentTime = 0;
+      }, 4000); // Play for 4 seconds
+      
       const playPromise = bell.play();
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
@@ -132,8 +140,7 @@ export const useTimer = (
             playBell();
             setIsRunning(true);
             return null;
-          }
-          if (prev <= 10) {
+          } else if (prev <= 10 && prev > 0) {
             playClick();
           }
           return prev - 1;
@@ -160,11 +167,11 @@ export const useTimer = (
             if (prev === 0) {
               if (currentRound < totalRounds) {
                 setIsResting(true);
+                playBell();
                 setRestTimeLeft(restTime);
-                playBell();
               } else {
-                reset();
                 playBell();
+                reset();
               }
               return roundTime;
             }
